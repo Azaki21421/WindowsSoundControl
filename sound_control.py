@@ -67,7 +67,13 @@ def monitor_volumes(settings):
                                 break
                 elif app_name not in settings:
                     settings[app_name] = DEFAULT_VOLUME
-                    updated = True
+                    sessions = AudioUtilities.GetAllSessions()
+                    for session in sessions:
+                        if session.Process and session.Process.name() == app_name:
+                            volume_ctl = session._ctl.QueryInterface(ISimpleAudioVolume)
+                            volume_ctl.SetMasterVolume(DEFAULT_VOLUME / 100, None)
+                            updated = True
+                            break
                 elif settings[app_name] != volume:
                     settings[app_name] = volume
                     updated = True
@@ -85,7 +91,7 @@ def create_icon_image():
     icon_size = 64
     image = Image.new("RGBA", (icon_size, icon_size), (255, 255, 255, 0))
     draw = ImageDraw.Draw(image)
-    draw.ellipse((0, 0, icon_size, icon_size), fill="blue", outline="white")
+    draw.ellipse((0, 0, icon_size, icon_size), fill="blue", outline="purple")
     return image
 
 
